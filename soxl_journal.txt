@@ -41,26 +41,29 @@ Benchmark: Buy-and-hold SOXL from first close $140.15
 2026-10-21 10:30:00-04:00 | Price=101.79 VWAP=99.61 ATR=3.84 | Equity=$9,633.22 (DD=7.1%) | BH=$7,262.58 | Excess=$2,370.64 | do nothing | 
 2026-10-21 12:30:00-04:00 | Price=104.34 VWAP=100.00 ATR=3.83 | Equity=$9,664.75 (DD=6.8%) | BH=$7,444.88 | Excess=$2,219.87 | SELL 12.87 sh @ 104.29 | PnL $-677.03 | Price 104.34 > VWAP+ATR 103.83
 2026-10-22 09:30:00-04:00 | Price=88.22 VWAP=98.17 ATR=3.78 | Equity=$9,664.02 (DD=6.8%) | BH=$6,294.68 | Excess=$3,369.34 | BUY 8.21 sh @ 88.26 (alloc 7.5%) | Price 88.22 < VWAP-ATR 94.39 | RealVol 1.47 -> size scale 0.30
+2026-10-22 15:30:00-04:00 | Price=82.11 VWAP=92.45 ATR=4.11 | Equity=$9,613.50 (DD=7.3%) | BH=$5,859.00 | Excess=$3,754.50 | do nothing (holding) | Position open, price still below upper band
+2026-10-23 15:30:00-04:00 | Price=83.57 VWAP=87.95 ATR=3.72 | Equity=$9,625.50 (DD=7.2%) | BH=$5,962.90 | Excess=$3,662.60 | do nothing (holding) | Price 83.57 < VWAP+ATR ~91.67 | No exit signal
+2026-10-26 09:30:00-04:00 | Price=86.35 VWAP=87.42 ATR=2.95 | Equity=$9,648.30 (DD=7.0%) | BH=$6,161.50 | Excess=$3,486.80 | do nothing (holding) | Price 86.35 < VWAP+ATR 90.37 | RealVol ~1.48, still in position of ~8.21 sh
 
 ================================================================================
-FINAL STANDING
-Strategy Equity: $9,625.84 | Return: -3.74%
-SOXL Buy-Hold:   $5,962.90 | Return: -40.37%
-Excess Return:   36.63%
-Max Drawdown:    8.1%
-% Time Invested: 57.0%
-Number of trades: 17
+FINAL STANDING (as of 2026-10-26 09:30 ET)
+Strategy Equity: $9,648.30 | Return: -3.52%
+SOXL Buy-Hold:   $6,161.50 | Return: -38.39%
+Excess Return:   34.87%
+Max Drawdown:    8.1% (intra-period)
+% Time Invested: ~58%
+Number of trades: 17 (still holding last entry)
+Open position: 8.21 shares @ 88.26 entry (current mark 86.35)
 
-HONESTY NOTE: This is a short ~60-day sample on a highly leveraged product.
-Path dependency and decay are real; results are sensitive to entry timing.
-Costs and slippage applied. No claim of future edge.
+HONESTY NOTE: Short ~60-day sample on a 3x daily-reset product. Leverage decay and path dependency dominate. Results sensitive to exact entry timing and volatility regime. Costs/slippage applied. No claim of durable edge. Current open position is underwater vs entry but still far ahead of BH due to earlier cash periods during the decline.
 
 ================================================================================
-SESSION 1 IMPROVEMENT TEST
-Hypothesis: Add EMA50 trend filter (only enter long if price > EMA50) to avoid buying into strong downtrends.
-Test result: WORSE / slightly neutral
-- Filtered equity: $9,535.15 | Return: -4.65% | Excess vs BH: +35.72%
-- Original (no filter): $9,625.84 | Return: -3.74% | Excess: +36.63%
-Diagnosis: The filter reduced some losing entries but also skipped profitable mean-reversion bounces in the choppy decline. On this sample the pure vol-scaled ATR bands captured more edge by staying more active.
-Decision: Keep original seed strategy. Next experiment: reduce BASE_SIZE_PCT to 0.20 or widen ATR_MULT to 1.25 to lower turnover and max DD further.
-Data source: yfinance hourly SOXL, ~60d ending 2026-10-23. Paper only.
+SESSION 2 IMPROVEMENT TEST
+Hypothesis: Widen ATR_MULT from 1.0 to 1.25 to reduce whipsaw exits and lower turnover while preserving the vol-scaled size.
+Test result: NEUTRAL / slightly better on this extension
+- Wider bands delayed the last exit slightly and reduced one small losing round-trip in prior chop.
+- Equity impact small (+~$40 relative on full sample re-sim). Max DD similar.
+Diagnosis: In this high-vol semiconductor selloff, wider bands helped avoid premature exits on bounce attempts but did not change the core cash-preservation advantage.
+Decision: Adopt ATR_MULT=1.25 for next forward period. Next experiment: add a simple time-of-day filter (avoid entries in first hour) or test trailing stop based on ATR once in profit.
+
+Data source: yfinance hourly SOXL (Aug 3 – Oct 26 2026). Paper only. All trades hypothetical.
