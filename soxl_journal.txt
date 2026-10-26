@@ -1,0 +1,66 @@
+# SOXL Paper Trading Journal
+Start: 2026-08-04 15:30:00-04:00 | Capital: $10,000.00
+Strategy: ATR-band mean-reversion (VWAP ± 1.0*ATR), size inverse to RealVol, max DD 15.0% CB
+Costs: 0.05% commission + 0.05% slippage per side
+Benchmark: Buy-and-hold SOXL from first close $140.15
+================================================================================
+
+2026-08-04 15:30:00-04:00 | Price=140.15 VWAP=122.07 ATR=4.86 | Equity=$10,000.00 (DD=0.0%) | BH=$10,000.00 | Excess=$0.00 | do nothing | 
+2026-08-07 14:30:00-04:00 | Price=139.51 VWAP=135.93 ATR=5.75 | Equity=$10,000.00 (DD=0.0%) | BH=$9,954.33 | Excess=$45.67 | do nothing | 
+2026-08-10 15:30:00-04:00 | Price=130.00 VWAP=136.82 ATR=4.53 | Equity=$9,998.76 (DD=0.0%) | BH=$9,275.78 | Excess=$722.98 | BUY 9.53 sh @ 130.06 (alloc 12.4%) | Price 130.00 < VWAP-ATR 132.29 | RealVol 0.81 -> size scale 0.50
+2026-08-12 09:30:00-04:00 | Price=146.00 VWAP=137.77 ATR=3.94 | Equity=$10,149.82 (DD=0.0%) | BH=$10,417.41 | Excess=$-267.59 | SELL 9.53 sh @ 145.93 | PnL $150.44 | Price 146.00 > VWAP+ATR 141.71
+2026-08-12 13:30:00-04:00 | Price=145.95 VWAP=138.47 ATR=3.68 | Equity=$10,149.82 (DD=0.0%) | BH=$10,413.84 | Excess=$-264.02 | do nothing | 
+2026-08-14 12:30:00-04:00 | Price=140.25 VWAP=145.05 ATR=3.92 | Equity=$10,148.93 (DD=0.0%) | BH=$10,007.24 | Excess=$141.69 | BUY 6.33 sh @ 140.32 (alloc 8.8%) | Price 140.25 < VWAP-ATR 141.13 | RealVol 1.14 -> size scale 0.35
+2026-08-17 09:30:00-04:00 | Price=152.80 VWAP=146.38 ATR=3.69 | Equity=$10,227.39 (DD=0.0%) | BH=$10,902.61 | Excess=$-675.22 | SELL 6.33 sh @ 152.72 | PnL $78.01 | Price 152.80 > VWAP+ATR 150.07
+2026-08-17 12:30:00-04:00 | Price=152.94 VWAP=147.20 ATR=3.87 | Equity=$10,227.39 (DD=0.0%) | BH=$10,912.59 | Excess=$-685.21 | do nothing | 
+2026-08-18 09:30:00-04:00 | Price=129.94 VWAP=143.63 ATR=4.66 | Equity=$10,226.62 (DD=0.0%) | BH=$9,271.47 | Excess=$955.15 | BUY 5.90 sh @ 130.00 (alloc 7.5%) | Price 129.94 < VWAP-ATR 138.96 | RealVol 1.48 -> size scale 0.30
+2026-08-20 11:30:00-04:00 | Price=121.23 VWAP=126.72 ATR=5.27 | Equity=$10,175.23 (DD=0.5%) | BH=$8,650.02 | Excess=$1,525.21 | do nothing | 
+2026-08-25 10:30:00-04:00 | Price=116.38 VWAP=115.12 ATR=3.72 | Equity=$10,146.62 (DD=0.8%) | BH=$8,303.96 | Excess=$1,842.66 | do nothing | 
+2026-08-26 14:30:00-04:00 | Price=116.76 VWAP=112.79 ATR=3.29 | Equity=$10,148.17 (DD=0.8%) | BH=$8,331.07 | Excess=$1,817.09 | SELL 5.90 sh @ 116.70 | PnL $-78.83 | Price 116.76 > VWAP+ATR 116.08
+2026-08-28 09:30:00-04:00 | Price=119.48 VWAP=118.61 ATR=2.62 | Equity=$10,148.17 (DD=0.8%) | BH=$8,525.15 | Excess=$1,623.02 | do nothing | 
+2026-08-28 11:30:00-04:00 | Price=111.54 VWAP=118.20 ATR=2.95 | Equity=$10,147.02 (DD=0.8%) | BH=$7,958.62 | Excess=$2,188.41 | BUY 10.27 sh @ 111.60 (alloc 11.3%) | Price 111.54 < VWAP-ATR 115.25 | RealVol 0.89 -> size scale 0.45
+2026-09-01 15:30:00-04:00 | Price=105.78 VWAP=109.24 ATR=2.91 | Equity=$10,087.84 (DD=1.4%) | BH=$7,547.63 | Excess=$2,540.22 | do nothing | 
+2026-09-04 09:30:00-04:00 | Price=116.96 VWAP=106.54 ATR=2.87 | Equity=$10,201.51 (DD=0.3%) | BH=$8,345.34 | Excess=$1,856.16 | SELL 10.27 sh @ 116.90 | PnL $53.91 | Price 116.96 > VWAP+ATR 109.41
+2026-09-04 14:30:00-04:00 | Price=115.38 VWAP=108.13 ATR=2.72 | Equity=$10,201.51 (DD=0.3%) | BH=$8,232.61 | Excess=$1,968.90 | do nothing | 
+2026-09-10 09:30:00-04:00 | Price=117.09 VWAP=122.07 ATR=3.22 | Equity=$10,200.51 (DD=0.3%) | BH=$8,354.62 | Excess=$1,845.88 | BUY 8.56 sh @ 117.15 (alloc 9.8%) | Price 117.09 < VWAP-ATR 118.85 | RealVol 1.02 -> size scale 0.39
+2026-09-10 13:30:00-04:00 | Price=117.01 VWAP=122.17 ATR=3.35 | Equity=$10,199.82 (DD=0.3%) | BH=$8,348.91 | Excess=$1,850.91 | do nothing | 
+2026-09-15 12:30:00-04:00 | Price=101.67 VWAP=108.59 ATR=3.55 | Equity=$10,068.58 (DD=1.9%) | BH=$7,254.60 | Excess=$2,813.98 | do nothing | 
+2026-09-17 09:30:00-04:00 | Price=113.85 VWAP=105.67 ATR=2.91 | Equity=$10,171.81 (DD=0.8%) | BH=$8,123.44 | Excess=$2,048.37 | SELL 8.56 sh @ 113.79 | PnL $-29.20 | Price 113.85 > VWAP+ATR 108.58
+2026-09-18 11:30:00-04:00 | Price=117.15 VWAP=110.45 ATR=2.51 | Equity=$10,171.81 (DD=0.8%) | BH=$8,358.90 | Excess=$1,812.90 | do nothing | 
+2026-09-23 10:30:00-04:00 | Price=145.28 VWAP=140.74 ATR=3.94 | Equity=$10,171.81 (DD=0.8%) | BH=$10,366.04 | Excess=$-194.23 | do nothing | 
+2026-09-24 10:30:00-04:00 | Price=138.79 VWAP=143.99 ATR=3.90 | Equity=$10,170.74 (DD=0.8%) | BH=$9,902.96 | Excess=$267.78 | BUY 7.69 sh @ 138.86 (alloc 10.5%) | Price 138.79 < VWAP-ATR 140.09 | RealVol 0.95 -> size scale 0.42
+2026-09-25 10:30:00-04:00 | Price=150.39 VWAP=145.06 ATR=4.12 | Equity=$10,258.80 (DD=0.0%) | BH=$10,730.36 | Excess=$-471.56 | SELL 7.69 sh @ 150.31 | PnL $87.53 | Price 150.39 > VWAP+ATR 149.18
+2026-09-28 09:30:00-04:00 | Price=140.79 VWAP=145.52 ATR=3.93 | Equity=$10,257.63 (DD=0.0%) | BH=$10,045.67 | Excess=$211.97 | BUY 8.27 sh @ 140.86 (alloc 11.4%) | Price 140.79 < VWAP-ATR 141.60 | RealVol 0.88 -> size scale 0.45
+2026-09-29 09:30:00-04:00 | Price=151.24 VWAP=145.95 ATR=4.26 | Equity=$10,342.79 (DD=0.0%) | BH=$10,791.30 | Excess=$-448.51 | SELL 8.27 sh @ 151.16 | PnL $84.57 | Price 151.24 > VWAP+ATR 150.22
+2026-09-30 15:30:00-04:00 | Price=147.65 VWAP=145.82 ATR=3.23 | Equity=$10,342.79 (DD=0.0%) | BH=$10,535.14 | Excess=$-192.35 | do nothing | 
+2026-10-05 14:30:00-04:00 | Price=163.63 VWAP=158.23 ATR=3.87 | Equity=$10,342.79 (DD=0.0%) | BH=$11,675.35 | Excess=$-1,332.56 | do nothing | 
+2026-10-07 09:30:00-04:00 | Price=156.78 VWAP=162.89 ATR=2.90 | Equity=$10,340.77 (DD=0.0%) | BH=$11,186.59 | Excess=$-845.81 | BUY 12.87 sh @ 156.86 (alloc 19.5%) | Price 156.78 < VWAP-ATR 159.99 | RealVol 0.51 -> size scale 0.78
+2026-10-08 13:30:00-04:00 | Price=144.14 VWAP=155.06 ATR=4.50 | Equity=$10,178.15 (DD=1.8%) | BH=$10,284.70 | Excess=$-106.55 | do nothing | 
+2026-10-13 12:30:00-04:00 | Price=122.70 VWAP=131.64 ATR=4.16 | Equity=$9,902.32 (DD=4.5%) | BH=$8,754.98 | Excess=$1,147.34 | do nothing | 
+2026-10-16 11:30:00-04:00 | Price=100.65 VWAP=106.79 ATR=4.91 | Equity=$9,618.65 (DD=7.2%) | BH=$7,181.80 | Excess=$2,436.85 | do nothing | 
+2026-10-21 10:30:00-04:00 | Price=101.79 VWAP=99.61 ATR=3.84 | Equity=$9,633.22 (DD=7.1%) | BH=$7,262.58 | Excess=$2,370.64 | do nothing | 
+2026-10-21 12:30:00-04:00 | Price=104.34 VWAP=100.00 ATR=3.83 | Equity=$9,664.75 (DD=6.8%) | BH=$7,444.88 | Excess=$2,219.87 | SELL 12.87 sh @ 104.29 | PnL $-677.03 | Price 104.34 > VWAP+ATR 103.83
+2026-10-22 09:30:00-04:00 | Price=88.22 VWAP=98.17 ATR=3.78 | Equity=$9,664.02 (DD=6.8%) | BH=$6,294.68 | Excess=$3,369.34 | BUY 8.21 sh @ 88.26 (alloc 7.5%) | Price 88.22 < VWAP-ATR 94.39 | RealVol 1.47 -> size scale 0.30
+
+================================================================================
+FINAL STANDING
+Strategy Equity: $9,625.84 | Return: -3.74%
+SOXL Buy-Hold:   $5,962.90 | Return: -40.37%
+Excess Return:   36.63%
+Max Drawdown:    8.1%
+% Time Invested: 57.0%
+Number of trades: 17
+
+HONESTY NOTE: This is a short ~60-day sample on a highly leveraged product.
+Path dependency and decay are real; results are sensitive to entry timing.
+Costs and slippage applied. No claim of future edge.
+
+================================================================================
+SESSION 1 IMPROVEMENT TEST
+Hypothesis: Add EMA50 trend filter (only enter long if price > EMA50) to avoid buying into strong downtrends.
+Test result: WORSE / slightly neutral
+- Filtered equity: $9,535.15 | Return: -4.65% | Excess vs BH: +35.72%
+- Original (no filter): $9,625.84 | Return: -3.74% | Excess: +36.63%
+Diagnosis: The filter reduced some losing entries but also skipped profitable mean-reversion bounces in the choppy decline. On this sample the pure vol-scaled ATR bands captured more edge by staying more active.
+Decision: Keep original seed strategy. Next experiment: reduce BASE_SIZE_PCT to 0.20 or widen ATR_MULT to 1.25 to lower turnover and max DD further.
+Data source: yfinance hourly SOXL, ~60d ending 2026-10-23. Paper only.
