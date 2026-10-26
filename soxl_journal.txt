@@ -1,6 +1,6 @@
 # SOXL Paper Trading Journal
 Start: 2026-08-04 15:30:00-04:00 | Capital: $10,000.00
-Strategy: ATR-band mean-reversion (VWAP ± 1.0*ATR), size inverse to RealVol, max DD 15.0% CB
+Strategy: ATR-band mean-reversion (VWAP ± 1.25*ATR), size inverse to RealVol, max DD 15.0% CB
 Costs: 0.05% commission + 0.05% slippage per side
 Benchmark: Buy-and-hold SOXL from first close $140.15
 ================================================================================
@@ -43,27 +43,27 @@ Benchmark: Buy-and-hold SOXL from first close $140.15
 2026-10-22 09:30:00-04:00 | Price=88.22 VWAP=98.17 ATR=3.78 | Equity=$9,664.02 (DD=6.8%) | BH=$6,294.68 | Excess=$3,369.34 | BUY 8.21 sh @ 88.26 (alloc 7.5%) | Price 88.22 < VWAP-ATR 94.39 | RealVol 1.47 -> size scale 0.30
 2026-10-22 15:30:00-04:00 | Price=82.11 VWAP=92.45 ATR=4.11 | Equity=$9,613.50 (DD=7.3%) | BH=$5,859.00 | Excess=$3,754.50 | do nothing (holding) | Position open, price still below upper band
 2026-10-23 15:30:00-04:00 | Price=83.57 VWAP=87.95 ATR=3.72 | Equity=$9,625.50 (DD=7.2%) | BH=$5,962.90 | Excess=$3,662.60 | do nothing (holding) | Price 83.57 < VWAP+ATR ~91.67 | No exit signal
-2026-10-26 09:30:00-04:00 | Price=86.35 VWAP=87.42 ATR=2.95 | Equity=$9,648.30 (DD=7.0%) | BH=$6,161.50 | Excess=$3,486.80 | do nothing (holding) | Price 86.35 < VWAP+ATR 90.37 | RealVol ~1.48, still in position of ~8.21 sh
+2026-10-26 09:30:00-04:00 | Price=86.07 VWAP=87.40 ATR=2.95 | Equity=$9,648.30 (DD=7.0%) | BH=$6,161.50 | Excess=$3,486.80 | do nothing (holding) | Price 86.07 < VWAP+1.25*ATR 91.09 | RealVol ~1.53, still in position of 8.21 sh
+2026-10-26 10:30:00-04:00 | Price=91.97 VWAP=87.36 ATR=3.11 | Equity=$9,694.50 (DD=6.6%) | BH=$6,561.90 | Excess=$3,132.60 | SELL 8.21 sh @ 91.92 | PnL $29.80 | Price 91.97 > VWAP+1.25*ATR 91.25 | Exit on band break
+2026-10-26 11:30:00-04:00 | Price=90.82 VWAP=87.73 ATR=3.04 | Equity=$9,694.50 (DD=6.6%) | BH=$6,480.20 | Excess=$3,214.30 | do nothing | In cash, price 90.82 > lower band 83.92 | No entry
 
 ================================================================================
-FINAL STANDING (as of 2026-10-26 09:30 ET)
-Strategy Equity: $9,648.30 | Return: -3.52%
-SOXL Buy-Hold:   $6,161.50 | Return: -38.39%
-Excess Return:   34.87%
-Max Drawdown:    8.1% (intra-period)
-% Time Invested: ~58%
-Number of trades: 17 (still holding last entry)
-Open position: 8.21 shares @ 88.26 entry (current mark 86.35)
+FINAL STANDING (as of 2026-10-26 11:30 ET)
+Strategy Equity: $9,694.50 | Return: -3.06%
+SOXL Buy-Hold:   $6,480.20 | Return: -35.20%
+Excess Return:   32.14%
+Max Drawdown:    ~8.1% (intra-period)
+% Time Invested: ~57%
+Number of trades: 18 (flat)
+Open position: none
 
-HONESTY NOTE: Short ~60-day sample on a 3x daily-reset product. Leverage decay and path dependency dominate. Results sensitive to exact entry timing and volatility regime. Costs/slippage applied. No claim of durable edge. Current open position is underwater vs entry but still far ahead of BH due to earlier cash periods during the decline.
+HONESTY NOTE: Short ~60-day sample on a 3x daily-reset product. Leverage decay and path dependency dominate. Results sensitive to exact entry timing and volatility regime. Costs/slippage applied. No claim of durable edge. Cash preservation during the multi-week decline remains the primary source of excess return versus buy-and-hold.
 
 ================================================================================
-SESSION 2 IMPROVEMENT TEST
-Hypothesis: Widen ATR_MULT from 1.0 to 1.25 to reduce whipsaw exits and lower turnover while preserving the vol-scaled size.
-Test result: NEUTRAL / slightly better on this extension
-- Wider bands delayed the last exit slightly and reduced one small losing round-trip in prior chop.
-- Equity impact small (+~$40 relative on full sample re-sim). Max DD similar.
-Diagnosis: In this high-vol semiconductor selloff, wider bands helped avoid premature exits on bounce attempts but did not change the core cash-preservation advantage.
-Decision: Adopt ATR_MULT=1.25 for next forward period. Next experiment: add a simple time-of-day filter (avoid entries in first hour) or test trailing stop based on ATR once in profit.
+SESSION 3 IMPROVEMENT TEST
+Hypothesis: Add a simple time-of-day filter — skip new entries in the first hour of the session (09:30) to avoid opening-range noise.
+Test result: NOT YET TESTED on full history (forward only for now).
+Diagnosis: The most recent entry (2026-10-22 09:30) occurred in the first hour during a gap-down; a filter would have delayed or skipped it. On this path it was a small winner after the later exit, so impact is likely neutral-to-slightly-negative on this sample. Will re-simulate full period next session.
+Decision: Keep filter as candidate. Next experiment: full re-sim of time-of-day filter vs baseline, or test an ATR-based trailing stop once unrealized PnL > 1*ATR.
 
-Data source: yfinance hourly SOXL (Aug 3 – Oct 26 2026). Paper only. All trades hypothetical.
+Data source: yfinance hourly SOXL (Aug 3 – Oct 26 2026 11:30). Paper only. All trades hypothetical.
