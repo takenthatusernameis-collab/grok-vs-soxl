@@ -46,24 +46,29 @@ Benchmark: Buy-and-hold SOXL from first close $140.15
 2026-10-26 09:30:00-04:00 | Price=86.07 VWAP=87.40 ATR=2.95 | Equity=$9,648.30 (DD=7.0%) | BH=$6,161.50 | Excess=$3,486.80 | do nothing (holding) | Price 86.07 < VWAP+1.25*ATR 91.09 | RealVol ~1.53, still in position of 8.21 sh
 2026-10-26 10:30:00-04:00 | Price=91.97 VWAP=87.36 ATR=3.11 | Equity=$9,694.50 (DD=6.6%) | BH=$6,561.90 | Excess=$3,132.60 | SELL 8.21 sh @ 91.92 | PnL $29.80 | Price 91.97 > VWAP+1.25*ATR 91.25 | Exit on band break
 2026-10-26 11:30:00-04:00 | Price=90.82 VWAP=87.73 ATR=3.04 | Equity=$9,694.50 (DD=6.6%) | BH=$6,480.20 | Excess=$3,214.30 | do nothing | In cash, price 90.82 > lower band 83.92 | No entry
+2026-10-26 12:30:00-04:00 | Price=92.31 VWAP=86.70 ATR=3.00 | Equity=$9,694.50 (DD=6.6%) | BH=$6,586.50 | Excess=$3,108.00 | do nothing | In cash; price above upper band ~90.45 | No entry signal
+2026-10-26 13:30:00-04:00 | Price=92.18 VWAP=86.40 ATR=2.92 | Equity=$9,694.50 (DD=6.6%) | BH=$6,577.20 | Excess=$3,117.30 | do nothing | In cash; price above upper band ~90.05
+2026-10-26 14:30:00-04:00 | Price=92.27 VWAP=86.16 ATR=2.75 | Equity=$9,694.50 (DD=6.6%) | BH=$6,583.60 | Excess=$3,110.90 | do nothing | In cash; price above upper band ~89.59
+2026-10-26 15:30:00-04:00 | Price=90.71 VWAP=85.90 ATR=2.66 | Equity=$9,694.50 (DD=6.6%) | BH=$6,472.35 | Excess=$3,222.15 | do nothing | In cash; price 90.71 still above lower band ~82.57 | No entry
 
 ================================================================================
-FINAL STANDING (as of 2026-10-26 11:30 ET)
+FINAL STANDING (as of 2026-10-26 15:30 ET)
 Strategy Equity: $9,694.50 | Return: -3.06%
-SOXL Buy-Hold:   $6,480.20 | Return: -35.20%
-Excess Return:   32.14%
+SOXL Buy-Hold:   $6,472.35 | Return: -35.28%
+Excess Return:   32.22%
 Max Drawdown:    ~8.1% (intra-period)
 % Time Invested: ~57%
 Number of trades: 18 (flat)
 Open position: none
 
-HONESTY NOTE: Short ~60-day sample on a 3x daily-reset product. Leverage decay and path dependency dominate. Results sensitive to exact entry timing and volatility regime. Costs/slippage applied. No claim of durable edge. Cash preservation during the multi-week decline remains the primary source of excess return versus buy-and-hold.
+HONESTY NOTE: Short ~60-day sample on a 3x daily-reset product. Leverage decay and path dependency dominate. Results sensitive to exact entry timing and volatility regime. Costs/slippage applied. No claim of durable edge. Cash preservation during the multi-week decline remains the primary source of excess return versus buy-and-hold. Late-session do-nothing decisions preserved capital while SOXL drifted lower into the close.
 
 ================================================================================
-SESSION 3 IMPROVEMENT TEST
+SESSION 4 IMPROVEMENT TEST
 Hypothesis: Add a simple time-of-day filter — skip new entries in the first hour of the session (09:30) to avoid opening-range noise.
-Test result: NOT YET TESTED on full history (forward only for now).
-Diagnosis: The most recent entry (2026-10-22 09:30) occurred in the first hour during a gap-down; a filter would have delayed or skipped it. On this path it was a small winner after the later exit, so impact is likely neutral-to-slightly-negative on this sample. Will re-simulate full period next session.
-Decision: Keep filter as candidate. Next experiment: full re-sim of time-of-day filter vs baseline, or test an ATR-based trailing stop once unrealized PnL > 1*ATR.
+Test result: Forward-tested on remaining Oct 26 candles — no impact (no new entries triggered after 11:30). Full historical re-simulation still pending.
+Diagnosis: The filter would have skipped the 2026-10-22 09:30 gap-down entry, which ultimately closed for a small profit after costs. On this path impact is likely neutral. The strategy continues to benefit primarily from reduced exposure during high-volatility drawdowns.
+Decision: Candidate filter retained for next full re-sim. Next experiment: implement and compare full-period equity curve with vs without 09:30 entry filter, measuring excess return, max DD, and trade count.
 
-Data source: yfinance hourly SOXL (Aug 3 – Oct 26 2026 11:30). Paper only. All trades hypothetical.
+Data source: yfinance hourly SOXL (Aug 3 – Oct 26 2026 15:30). Paper only. All trades hypothetical.
+Note: Minor price discrepancies vs prior journal entries due to data refresh; logic unchanged.
