@@ -81,3 +81,34 @@ Decision: Retain as candidate. Next experiment: full-period re-simulation compar
 
 Data source: yfinance hourly SOXL (through 2026-10-27 15:30). Paper only. All trades hypothetical.
 Note: Indicators (VWAP/ATR) approximated with rolling windows consistent with prior journal style; minor discrepancies expected vs exact prior calculations.
+
+# --- SESSION 6: Full-period re-simulation of gap filter (2026-10-28) ---
+No new hourly candles available beyond 2026-10-27 15:30 ET (market not yet open for Oct 28). Proceeded with the planned full-period re-simulation on yfinance hourly data (Aug 4 – Oct 27 2026, ~400 bars after indicator warm-up).
+
+Approximation used: rolling 20-period VWAP, 14-period ATR, 20-period RealVol (std of returns × sqrt(252*6.5)), band ± 1.25*ATR, position size inverse to RealVol (base ~15% equity scaled), 0.10% total per-side costs, 15% max DD circuit breaker. Starting capital $10k. This approximation produced strategy equity ~$9,691 and excess ~$2,059 vs BH on the same data window — directionally consistent with journal (journal BH lower due to higher assumed start price).
+
+Gap filter rule tested: skip new long entry if bar open > 2% above prior close.
+
+Results (full period):
+- Baseline: Equity $9,691.10 | BH $7,631.79 | Excess $2,059.31 | Trades ~14 | % time invested 59.8%
+- Gap filter: Equity $9,691.10 | BH $7,631.79 | Excess $2,059.31 | Trades ~14 | % time invested 59.8%
+- Delta: Neutral (identical). No entries were skipped because no candidate mean-reversion signals occurred on gap-up bars in this sample.
+
+Diagnosis: The existing ATR-band logic already avoided most gap-up entries. The filter adds no edge (and no harm) on this path. Potential value remains for other regimes with more frequent overnight gaps that reverse or continue; sample too short and specific to claim improvement. Leverage decay / path dependency of SOXL still dominate long-run expectations.
+
+Decision: Discard as active rule for now (neutral). Keep as optional filter for future high-gap environments. No change to live paper logic.
+
+================================================================================
+CURRENT STANDING (unchanged, as of 2026-10-27 15:30 ET)
+Strategy Equity: $9,694.50 | Return: -3.06%
+SOXL Buy-Hold:   $7,212.98 | Return: -27.87%
+Excess Return:   ~24.8%
+Max Drawdown:    ~8.1%
+% Time Invested: ~55%
+Open position: none
+
+HONESTY: Outperformance is real on this path (mostly from cash during the Sep-Oct drawdown) but not claimed as durable. Short sample, high path dependency of 3× daily-reset product, costs applied. Next session should advance with any new Oct 28+ candles when available.
+
+NEXT EXPERIMENT: When new hourly data arrives, advance the journal hour-by-hour. Secondary: test a mild trend filter (e.g., only enter long if 5-bar slope of VWAP is not strongly negative) on the historical window and report delta.
+
+Data: yfinance hourly SOXL. Paper only. All hypothetical.
