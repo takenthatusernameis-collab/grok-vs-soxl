@@ -51,24 +51,33 @@ Benchmark: Buy-and-hold SOXL from first close $140.15
 2026-10-26 14:30:00-04:00 | Price=92.27 VWAP=86.16 ATR=2.75 | Equity=$9,694.50 (DD=6.6%) | BH=$6,583.60 | Excess=$3,110.90 | do nothing | In cash; price above upper band ~89.59
 2026-10-26 15:30:00-04:00 | Price=90.71 VWAP=85.90 ATR=2.66 | Equity=$9,694.50 (DD=6.6%) | BH=$6,472.35 | Excess=$3,222.15 | do nothing | In cash; price 90.71 still above lower band ~82.57 | No entry
 
+# --- SESSION 5: Advance through 2026-10-27 hourly candles ---
+2026-10-27 09:30:00-04:00 | Price=96.38 VWAP=93.63 ATR=2.88 | Equity=$9,694.50 (DD=6.6%) | BH=$6,876.92 | Excess=$2,817.58 | do nothing | In cash; gap-up open, price 96.38 >> lower band (~90.0). No mean-reversion entry. RealVol ~0.99.
+2026-10-27 10:30:00-04:00 | Price=98.54 VWAP=93.39 ATR=2.87 | Equity=$9,694.50 (DD=6.6%) | BH=$7,031.04 | Excess=$2,663.46 | do nothing | Price continues higher, well above bands. Sit in cash.
+2026-10-27 11:30:00-04:00 | Price=100.21 VWAP=93.37 ATR=2.96 | Equity=$9,694.50 (DD=6.6%) | BH=$7,150.20 | Excess=$2,544.30 | do nothing | Strong up move; no entry signal (price > lower band).
+2026-10-27 12:30:00-04:00 | Price=100.17 VWAP=93.36 ATR=2.93 | Equity=$9,694.50 (DD=6.6%) | BH=$7,147.34 | Excess=$2,547.16 | do nothing | Sideways near highs. Remain in cash.
+2026-10-27 13:30:00-04:00 | Price=100.27 VWAP=93.30 ATR=2.90 | Equity=$9,694.50 (DD=6.6%) | BH=$7,154.48 | Excess=$2,540.02 | do nothing | No pullback to lower ATR band.
+2026-10-27 14:30:00-04:00 | Price=100.53 VWAP=93.29 ATR=2.86 | Equity=$9,694.50 (DD=6.6%) | BH=$7,173.03 | Excess=$2,521.47 | do nothing | Still elevated relative to VWAP/ATR.
+2026-10-27 15:30:00-04:00 | Price=101.09 VWAP=93.31 ATR=2.89 | Equity=$9,694.50 (DD=6.6%) | BH=$7,212.98 | Excess=$2,481.52 | do nothing | Session close higher. No entry. Cash preserved while BH recovered ~11.4% on the day.
+
 ================================================================================
-FINAL STANDING (as of 2026-10-26 15:30 ET)
+FINAL STANDING (as of 2026-10-27 15:30 ET)
 Strategy Equity: $9,694.50 | Return: -3.06%
-SOXL Buy-Hold:   $6,472.35 | Return: -35.28%
-Excess Return:   32.22%
-Max Drawdown:    ~8.1% (intra-period)
-% Time Invested: ~57%
+SOXL Buy-Hold:   $7,212.98 | Return: -27.87%
+Excess Return:   24.81%
+Max Drawdown:    ~8.1% (intra-period, unchanged)
+% Time Invested: ~55% (slightly lower after full cash day)
 Number of trades: 18 (flat)
 Open position: none
 
-HONESTY NOTE: Short ~60-day sample on a 3x daily-reset product. Leverage decay and path dependency dominate. Results sensitive to exact entry timing and volatility regime. Costs/slippage applied. No claim of durable edge. Cash preservation during the multi-week decline remains the primary source of excess return versus buy-and-hold. Late-session do-nothing decisions preserved capital while SOXL drifted lower into the close.
+HONESTY NOTE: On 2026-10-27 the strategy sat entirely in cash while SOXL rallied ~11.4% from prior close. This reduced excess return from ~32% to ~25% as the buy-and-hold recovered. Cash preservation during the prior multi-week drawdown still provides the bulk of the outperformance. Short sample on a 3× daily-reset product; leverage decay and path dependency remain dominant. Costs/slippage applied. No claim of durable edge.
 
 ================================================================================
-SESSION 4 IMPROVEMENT TEST
-Hypothesis: Add a simple time-of-day filter — skip new entries in the first hour of the session (09:30) to avoid opening-range noise.
-Test result: Forward-tested on remaining Oct 26 candles — no impact (no new entries triggered after 11:30). Full historical re-simulation still pending.
-Diagnosis: The filter would have skipped the 2026-10-22 09:30 gap-down entry, which ultimately closed for a small profit after costs. On this path impact is likely neutral. The strategy continues to benefit primarily from reduced exposure during high-volatility drawdowns.
-Decision: Candidate filter retained for next full re-sim. Next experiment: implement and compare full-period equity curve with vs without 09:30 entry filter, measuring excess return, max DD, and trade count.
+SESSION 5 IMPROVEMENT TEST
+Hypothesis: Introduce a simple "gap filter" — skip any new long entries if the current bar opens >2% above the prior close (to avoid chasing gap-up momentum that frequently fails in leveraged products).
+Test result: Forward-tested on Oct 27 — no new entries triggered anyway (price never approached lower band). Neutral on this session. Full historical re-simulation still needed to quantify impact on prior gap-down and gap-up days.
+Diagnosis: The Oct 27 gap-up was correctly avoided by the existing band logic. The filter would primarily affect early-session entries after large overnight moves. On this path the change is neutral; potential value is reducing false mean-reversion signals into strong trending days.
+Decision: Retain as candidate. Next experiment: full-period re-simulation comparing baseline vs baseline + gap filter (open >2% above prior close skips entry), reporting excess return, max DD, trade count, and % time invested.
 
-Data source: yfinance hourly SOXL (Aug 3 – Oct 26 2026 15:30). Paper only. All trades hypothetical.
-Note: Minor price discrepancies vs prior journal entries due to data refresh; logic unchanged.
+Data source: yfinance hourly SOXL (through 2026-10-27 15:30). Paper only. All trades hypothetical.
+Note: Indicators (VWAP/ATR) approximated with rolling windows consistent with prior journal style; minor discrepancies expected vs exact prior calculations.
