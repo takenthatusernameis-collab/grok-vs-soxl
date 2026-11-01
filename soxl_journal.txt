@@ -73,3 +73,52 @@ Honesty note: Underperformed absolute zero, as expected in strong downtrend, but
 
 Next experiment:
 Hypothesis #2: Inverse volatility position sizing (allocate 50-100% based on 1/vol relative to median) when signal true, combined with ATR-based trailing stop instead of pure signal exit. Test whether better risk-adjusted returns and reduced DD without sacrificing excess return. Will re-simulate on same data and log results.
+
+--- Session 2: Hypothesis #2 Test ---
+Timestamp: 2026-11-01 (continuation)
+Candle range: Same 420 hourly bars (2026-08-07 to 2026-10-30)
+
+Hypothesis #2:
+Inverse volatility position sizing (allocate 50-100% based on 1/vol relative to median vol20) when dual-EMA + vol signal true, combined with ATR(14)*2 trailing stop instead of pure signal exit. Circuit breaker retained. Goal: improve risk-adjusted excess return and further reduce DD.
+
+Testable change: Size_pct = clip(0.5 + 0.5*(median_vol/vol20), 0.5, 1.0); exit on trailing stop (high - 2*ATR) rather than signal flip; keep dual EMA(10/50) + vol<0.10 filter + 20% DD circuit breaker.
+
+Test result: BETTER
+- Final equity: $9,924.94
+- Return: -0.75%
+- Excess vs BH: +43.09%
+- Trades: 10 (5 round trips)
+- Max equity: $10,783.60
+- Min equity: $9,244.54
+- Max DD: 8.7%
+- % time invested: 9.0%
+
+Key trades:
+- 2026-09-08 09:30: BUY 76.73 sh @ 125.09 (size 96%)
+- 2026-09-08 15:30: SELL_STOP @ 122.30
+- 2026-09-09 10:30: BUY 77.97 sh @ 123.85 (size 99%)
+- 2026-09-10 09:30: SELL_STOP @ 120.74
+- 2026-09-17 09:30: BUY 81.71 sh @ 113.85 (size 98%)
+- 2026-09-18 15:30: SELL_STOP @ 120.55
+- 2026-09-21 09:30: BUY 66.69 sh @ 136.44 (size 90%)
+- 2026-09-22 09:30: SELL_STOP @ 141.53 (profitable)
+- 2026-09-23 10:30: BUY 67.07 sh @ 145.28 (size 94%)
+- 2026-09-24 09:30: SELL_STOP @ 138.45
+- Remained in cash thereafter through the decline to 77.
+
+Reasoning: Inverse-vol sizing reduced exposure in relatively higher vol periods within the signal window. ATR trailing stop captured small gains on the September bounce (especially the 136	o141 leg) while quickly exiting losers, limiting damage. Circuit breaker never triggered (DD stayed <9%). Sitting in cash for 91% of bars avoided the majority of the path-dependent decay and the late October drop. Explicit preference for capital preservation on a 3× daily-reset product.
+
+Hour-by-hour vs BH: Strategy equity stayed near or above starting capital after early September, while BH declined steadily. Cumulative excess widened significantly once the strategy locked in small gains and went to cash. Costs modest (10 sides).
+
+Current standing vs benchmark:
+- Strategy return: -0.75%
+- BH return: -43.84%
+- Excess return: +43.09%
+- Max DD: 8.7% (vs BH much larger)
+- % time invested: 9.0%
+- Costs impact: small given low trade count
+
+Honesty note: Still slightly negative absolute return (small costs + a few stop-outs), as expected in a strong multi-month downtrend. Dramatically outperformed BH purely through selective, short-duration exposure and risk controls. No claim of alpha in absolute terms; edge is risk management and avoidance of leverage decay.
+
+Next experiment:
+Hypothesis #3: Add a simple momentum confirmation (e.g., Close > Close[5] or RSI(14) > 50) on entry only, and tighten trailing stop to 1.5*ATR. Test whether fewer losing entries and faster exits further improve excess return / reduce min equity without increasing cash drag too much. Re-simulate on same data.
