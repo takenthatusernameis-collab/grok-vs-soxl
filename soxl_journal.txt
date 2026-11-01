@@ -1,1 +1,75 @@
-See local file - full content pushed in follow-up if needed
+SOXL Paper-Trading Journal
+==========================
+Challenge: Systematically outperform pure buy-and-hold of SOXL on hourly candles.
+Starting capital: $10,000 paper
+Cost assumption: 0.05% per side (commission + slippage)
+Data source: Yahoo Finance via yfinance, hourly bars from 2026-08-07 09:30 to 2026-10-30 15:30 (420 candles)
+BH start price: ~137.24, end price: ~77.07, BH return: -43.84%
+Note: Period is strongly downtrending for the semiconductor 3x bull ETF. Leverage decay and path dependency acknowledged; strategy prioritizes capital preservation.
+
+--- Session 1: Initial Simulation ---
+Timestamp: 2026-11-01 (journal creation)
+Candle range: Full available hourly series
+
+Initial Strategy (seed):
+- Long SOXL only when Close > EMA(10) AND 20-period realized vol < 0.08
+- Full capital allocation when long, cash otherwise
+- Exit when signal false
+- No position sizing adjustment beyond binary long/cash
+
+Reasoning for parameters: Short EMA for responsiveness on hourly; vol filter to avoid high-volatility chop or crash periods typical of 3x ETFs. Simple to establish baseline.
+
+Results of initial strategy:
+- Final equity: $5,031.03
+- Return: -49.69%
+- BH return: -43.84%
+- Excess return: -5.85% (underperformed)
+- Number of trades: 62
+- Max equity: $11,186
+- Min equity: $5,031
+- Max DD: ~55%
+- % time invested: high (frequent entries/exits)
+
+Diagnosis: Excessive whipsaws on hourly noise. Entered and exited frequently around EMA, paying costs repeatedly. Caught part of the late October drop before exiting. Vol threshold too low relative to SOXL's typical hourly vol.
+
+Action: Do nothing further on this version. Record as failed baseline.
+
+--- Improvement Hypothesis #1 ---
+Hypothesis: Adding a longer-term trend filter (price > EMA(50)) and a hard max-drawdown circuit breaker (force cash if equity falls >20% from peak, reset only after 10% recovery from trough) plus slightly higher vol threshold (0.10) will reduce false entries, preserve capital in downtrends, and improve excess return vs BH.
+Testable change: Dual EMA + circuit breaker + VOL_THRESHOLD=0.10
+
+Test result: BETTER
+- Final equity: $8,129.80
+- Return: -18.70%
+- Excess vs BH: +25.14%
+- Trades: 14
+- Max equity: $10,396
+- Min equity: $8,130
+- Max DD: ~21.8%
+- % time invested: lower (exited late August and stayed mostly cash through the remaining decline)
+
+Key trades (selected):
+- 2026-08-07 10:30: BUY ~72.02 shares @ 138.85 (initial entry on signal)
+- 2026-08-07 11:30: SELL @ 137.43 (quick exit)
+- Multiple short holds early August
+- 2026-08-27 13:30: SELL ~70.42 @ 119.25
+- 2026-08-27 15:30: BUY @ 123.17
+- 2026-08-28 09:30: SELL @ 119.48 (circuit / signal exit)
+- Remained in cash thereafter, avoiding the bulk of the drop from ~120s to 77.
+
+Reasoning for exits: Signal required both short and medium EMA alignment + low vol. Circuit breaker activated on drawdowns, forcing cash and preventing re-entry until recovery criteria met (which never fully occurred in this downtrend). Explicitly sitting in cash during high vol and downtrend periods is preferred for 3x daily-reset product to limit path-dependent decay.
+
+Hour-by-hour vs BH: Strategy equity tracked above BH after early August exits. Cumulative excess positive and widening as BH continued lower while strategy held cash. Detailed equity curve saved in simulation (see sim notes).
+
+Current standing vs benchmark:
+- Strategy return: -18.70%
+- BH return: -43.84%
+- Excess return: +25.14%
+- Max DD: 21.8% (vs BH larger)
+- % time invested: ~15-20% estimated (mostly cash after day 15)
+- Costs impact: modest given fewer trades
+
+Honesty note: Underperformed absolute zero, as expected in strong downtrend, but significantly outperformed BH by capital preservation. No heroic trades; edge from risk rules.
+
+Next experiment:
+Hypothesis #2: Inverse volatility position sizing (allocate 50-100% based on 1/vol relative to median) when signal true, combined with ATR-based trailing stop instead of pure signal exit. Test whether better risk-adjusted returns and reduced DD without sacrificing excess return. Will re-simulate on same data and log results.
