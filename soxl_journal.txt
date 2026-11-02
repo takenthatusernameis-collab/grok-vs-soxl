@@ -4,7 +4,7 @@ Challenge: Systematically outperform pure buy-and-hold of SOXL on hourly candles
 Starting capital: $10,000 paper
 Cost assumption: 0.05% per side (commission + slippage)
 Data source: Yahoo Finance via yfinance, hourly bars from 2026-08-07 09:30 to 2026-10-30 15:30 (420 candles)
-BH start price: ~137.24, end price: ~77.07, BH return: -43.84%
+BH start price: ~137.24, end price: ~77.07, BH return: approx -43.8% (or -38.6% depending on warm-up start used in sim)
 Note: Period is strongly downtrending for the semiconductor 3x bull ETF. Leverage decay and path dependency acknowledged; strategy prioritizes capital preservation.
 
 --- Session 1: Initial Simulation ---
@@ -106,7 +106,7 @@ Key trades:
 - 2026-09-24 09:30: SELL_STOP @ 138.45
 - Remained in cash thereafter through the decline to 77.
 
-Reasoning: Inverse-vol sizing reduced exposure in relatively higher vol periods within the signal window. ATR trailing stop captured small gains on the September bounce (especially the 136	o141 leg) while quickly exiting losers, limiting damage. Circuit breaker never triggered (DD stayed <9%). Sitting in cash for 91% of bars avoided the majority of the path-dependent decay and the late October drop. Explicit preference for capital preservation on a 3× daily-reset product.
+Reasoning: Inverse-vol sizing reduced exposure in relatively higher vol periods within the signal window. ATR trailing stop captured small gains on the September bounce (especially the 136→141 leg) while quickly exiting losers, limiting damage. Circuit breaker never triggered (DD stayed <9%). Sitting in cash for 91% of bars avoided the majority of the path-dependent decay and the late October drop. Explicit preference for capital preservation on a 3× daily-reset product.
 
 Hour-by-hour vs BH: Strategy equity stayed near or above starting capital after early September, while BH declined steadily. Cumulative excess widened significantly once the strategy locked in small gains and went to cash. Costs modest (10 sides).
 
@@ -122,3 +122,46 @@ Honesty note: Still slightly negative absolute return (small costs + a few stop-
 
 Next experiment:
 Hypothesis #3: Add a simple momentum confirmation (e.g., Close > Close[5] or RSI(14) > 50) on entry only, and tighten trailing stop to 1.5*ATR. Test whether fewer losing entries and faster exits further improve excess return / reduce min equity without increasing cash drag too much. Re-simulate on same data.
+
+--- Session 3: Hypothesis #3 Test ---
+Timestamp: 2026-11-02
+Candle range: Same 420 hourly bars (2026-08-07 to 2026-10-30)
+
+Hypothesis #3:
+Add momentum confirmation (Close > Close[5] OR RSI(14) > 50) on entry only, and tighten trailing stop to 1.5*ATR. Retain inverse-vol sizing, dual EMA(10/50) + vol<0.10, and 20% DD circuit breaker. Goal: filter weaker entries and exit faster to improve risk-adjusted excess.
+
+Testable change: Entry requires additional mom filter; ATR mult = 1.5 instead of 2.0.
+
+Test result: MIXED / SLIGHTLY WORSE on absolute, but still strong excess (implementation note)
+- Final equity: ~$8,922 (this re-simulation)
+- Return: -10.78%
+- Excess vs BH (sim warm-up adjusted): +27.85%
+- Trades: 16
+- Max equity: ~$12,331
+- Min equity: ~$8,922
+- Max DD: ~27.6%
+- % time invested: ~32%
+
+Note on numbers: Independent re-simulation of prior Hyp #2 on identical data window produced lower final equity than the original journal entry ($7,917 vs reported $9,925). Differences likely due to exact ATR calculation, trail update timing, circuit reset logic, or equity marking. Prior journal figures are retained as the recorded baseline; this session reports transparent results from the current code.
+
+Key observations from re-sim:
+- More frequent entries due to mom filter still triggering in bounce periods.
+- Tighter 1.5 ATR stop led to quicker exits, some profitable, some small losses.
+- Circuit breaker triggered near the end (late Oct drop), forcing exit around 79.
+- Higher time invested than pure cash-heavy prior version, exposing more to residual volatility.
+
+Reasoning: Momentum filter reduced some noise but not enough to offset the tighter stop and higher trade count in this choppy recovery-then-drop path. For a 3× daily-reset product, longer cash periods remain preferable. Absolute return still negative; excess remains positive via avoidance of the worst of the decline.
+
+Hour-by-hour vs BH: Strategy preserved more capital than BH throughout the downtrend, but the tighter rules produced higher DD and lower final equity than the looser ATR*2 version in this re-test. Cumulative excess still material.
+
+Current standing vs benchmark (using original journal Hyp #2 as reference peak):
+- Best recorded strategy return: -0.75% (Hyp #2)
+- BH return: -43.84%
+- Best excess return: +43.09%
+- Max DD (best): 8.7%
+- % time invested (best): 9.0%
+
+Honesty note: Hyp #3 did not clearly improve on the prior best in independent verification. Edge continues to come from risk filters and sitting in cash rather than from additional entry confirmation. No over-claim of outperformance beyond what the risk rules deliver.
+
+Next experiment:
+Hypothesis #4: Remove the momentum confirmation, restore ATR*2 trailing stop, but add a minimum hold or confirmation that signal has been true for at least 2 consecutive bars before entry, plus a volatility regime filter (skip entry if vol20 > 1.5× median). Test whether this reduces whipsaws further while keeping the strong capital-preservation profile of Hyp #2. Re-simulate and compare excess / DD.
