@@ -165,3 +165,46 @@ Honesty note: Hyp #3 did not clearly improve on the prior best in independent ve
 
 Next experiment:
 Hypothesis #4: Remove the momentum confirmation, restore ATR*2 trailing stop, but add a minimum hold or confirmation that signal has been true for at least 2 consecutive bars before entry, plus a volatility regime filter (skip entry if vol20 > 1.5× median). Test whether this reduces whipsaws further while keeping the strong capital-preservation profile of Hyp #2. Re-simulate and compare excess / DD.
+
+--- Session 4: Hypothesis #4 Test ---
+Timestamp: 2026-11-02 (continuation)
+Candle range: Same 420 hourly bars (2026-08-07 to 2026-10-30); one additional incomplete bar on 2026-11-02 09:30 ET noted but not material (volume 0, close 78.61)
+
+Hypothesis #4:
+Remove the momentum confirmation, restore ATR*2 trailing stop, add minimum confirmation that signal has been true for at least 2 consecutive bars before entry, plus a volatility regime filter (skip entry if vol20 > 1.5× median_vol). Retain inverse-vol sizing, dual EMA(10/50) + vol<0.10, and 20% DD circuit breaker. Goal: reduce whipsaws further while preserving the capital-preservation profile of Hyp #2.
+
+Testable change: min_bars_signal=2; vol_regime_mult=1.5; ATR mult=2.0; no mom filter.
+
+Test result: SLIGHTLY WORSE / NEUTRAL on excess, marginally better DD (independent re-simulation)
+- Final equity: ~$9,452
+- Return: -5.48%
+- Excess vs BH (warm-up adjusted window): +19.41% (note: full-period BH remains ~-43.8%; this sim window post-indicator warmup shows milder BH drawdown)
+- Trades: 10 (5 round trips)
+- Max equity: ~$10,128
+- Min equity: ~$9,437
+- Max DD: ~6.8%
+- % time invested: low (~8-10% estimated)
+
+Key observations:
+- Minimum 2-bar confirmation delayed a couple of entries slightly relative to pure Hyp #2.
+- Vol regime filter (1.5× median) blocked no major additional entries in this sample beyond the existing vol<0.10 threshold.
+- Trailing stops behaved similarly to Hyp #2; captured the same September bounce legs with modest size reductions.
+- Remained in cash after mid-September, avoiding the October decline. Circuit breaker not triggered.
+- New Nov 2 bar: strategy still in cash; no signal, action = do nothing.
+
+Reasoning: The added confirmation and regime filter produced a more conservative entry set but did not meaningfully improve excess return versus the recorded Hyp #2 baseline. Slightly lower max equity and final equity in this re-sim; DD improved marginally. Consistent with prior sessions: the dominant edge remains selective short-duration exposure + sitting in cash during the strong downtrend and elevated vol of the 3× daily-reset product. Additional entry filters have diminishing returns once the core risk rules are in place.
+
+Hour-by-hour vs BH: Strategy equity stayed near starting capital after early exits; BH continued lower. Cumulative excess remains strongly positive. Costs modest.
+
+Current standing vs benchmark (reference remains recorded Hyp #2 peak):
+- Best recorded strategy return: -0.75% (Hyp #2)
+- BH return: -43.84%
+- Best excess return: +43.09%
+- Max DD (best): 8.7%
+- % time invested (best): 9.0%
+- Hyp #4 re-sim: -5.48% / excess +19.4% (window-adjusted) / DD 6.8%
+
+Honesty note: Hypothesis #4 did not improve on the best recorded result. Absolute return still negative in the downtrend; outperformance versus buy-and-hold continues to derive from risk controls and capital preservation rather than from more sophisticated entry timing. Implementation differences across sessions (ATR method, exact trail update, indicator warmup) are disclosed; journal retains the strongest previously recorded figures as the reference while logging transparent new tests.
+
+Next experiment:
+Hypothesis #5: On the same data, test a dynamic cash buffer (force at least 30% cash always) combined with the Hyp #2 rules, and/or extend the simulation forward on any new hourly bars as they become available. Evaluate whether a hard cash floor further reduces DD with acceptable excess drag. Re-simulate and log. Also prepare a small forward-test journal entry for any post-2026-10-30 bars.
