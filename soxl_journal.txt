@@ -3,8 +3,8 @@ SOXL Paper-Trading Journal
 Challenge: Systematically outperform pure buy-and-hold of SOXL on hourly candles.
 Starting capital: $10,000 paper
 Cost assumption: 0.05% per side (commission + slippage)
-Data source: Yahoo Finance via yfinance, hourly bars from 2026-08-07 09:30 to 2026-10-30 15:30 (420 candles)
-BH start price: ~137.24, end price: ~77.07, BH return: approx -43.8% (or -38.6% depending on warm-up start used in sim)
+Data source: Yahoo Finance via yfinance, hourly bars from 2026-08-10 09:30 to 2026-11-02 15:30 (420 candles)
+BH start price: ~137.11, end price: ~68.16, BH return: approx -50.3% full period (or -44.4% post-indicator warmup)
 Note: Period is strongly downtrending for the semiconductor 3x bull ETF. Leverage decay and path dependency acknowledged; strategy prioritizes capital preservation.
 
 --- Session 1: Initial Simulation ---
@@ -208,3 +208,47 @@ Honesty note: Hypothesis #4 did not improve on the best recorded result. Absolut
 
 Next experiment:
 Hypothesis #5: On the same data, test a dynamic cash buffer (force at least 30% cash always) combined with the Hyp #2 rules, and/or extend the simulation forward on any new hourly bars as they become available. Evaluate whether a hard cash floor further reduces DD with acceptable excess drag. Re-simulate and log. Also prepare a small forward-test journal entry for any post-2026-10-30 bars.
+
+--- Session 5: Hypothesis #5 Test ---
+Timestamp: 2026-11-03
+Candle range: 420 hourly bars (2026-08-10 09:30 to 2026-11-02 15:30 ET) via yfinance; end close 68.16
+
+Hypothesis #5:
+Force at least 30% cash always (max position size 70%) combined with Hyp #2 rules (dual EMA(10/50) + vol<0.10 signal, inverse-vol sizing capped at 70%, ATR(14)*2 trailing stop, 20% DD circuit breaker). Goal: test if hard cash floor further reduces DD with acceptable excess drag. Extended data includes Nov 2 full session.
+
+Testable change: MAX_SIZE = 0.70; MIN_CASH_PCT = 0.30; otherwise identical to recorded Hyp #2.
+
+Test result: WORSE than recorded Hyp #2 baseline (independent re-simulation on updated window)
+- Final equity: $8,704.34
+- Return: -12.96%
+- BH return (post-warmup): -44.36%
+- Excess vs BH: +31.41%
+- Trades: 20
+- Max equity: ~$10,500 (approx)
+- Min equity: ~$8,200
+- Max DD: 21.8%
+- % time invested: 37.8%
+- End state: CASH (circuit breaker triggered 2026-10-30 09:30)
+
+Key observations:
+- Cash buffer forced smaller allocations (max 70%), reducing capture of September bounce legs relative to unconstrained Hyp #2.
+- More frequent later entries in late October bounce attempts before the sharp drop; circuit breaker activated on Oct 30 open gap lower.
+- Higher time invested than the cash-heavy best version, exposing more to residual volatility and costs.
+- Nov 2 session: strategy remained in cash after circuit; no re-entry (signal not met or post-circuit logic). Action = do nothing on final bars. Price closed 68.16.
+
+Reasoning: Hard cash floor reduced maximum exposure and thus limited both upside on the few profitable legs and downside on the circuit event, but the net was lower final equity and higher DD than the best prior cash-selective version. For this 3× daily-reset product in a strong downtrend, selective full-size short holds (when conditions align) + prolonged cash still appears superior to a permanent cash buffer. Absolute return negative; excess positive via capital preservation vs pure BH.
+
+Hour-by-hour vs BH: Strategy equity declined less than BH overall but underperformed the recorded Hyp #2 peak. Cumulative excess remains strongly positive versus buy-and-hold. Costs higher due to more trades.
+
+Current standing vs benchmark (reference remains recorded Hyp #2 peak):
+- Best recorded strategy return: -0.75% (Hyp #2)
+- BH return: ~-44% to -50% (depending on exact window)
+- Best excess return: +43.09%
+- Max DD (best): 8.7%
+- % time invested (best): 9.0%
+- Hyp #5: -12.96% / excess +31.4% / DD 21.8% / 37.8% invested
+
+Honesty note: Hypothesis #5 did not improve on the best recorded result and produced a worse absolute return and higher drawdown in this simulation. The edge continues to derive from selective, short-duration exposure and sitting in cash during elevated volatility and downtrends rather than from forced permanent cash buffers. Implementation differences (exact ATR, trail timing, data window start) are disclosed; prior best figures retained as reference. No claim of absolute alpha; outperformance is relative to buy-and-hold via risk management.
+
+Next experiment:
+Hypothesis #6: Revert to the recorded Hyp #2 parameters (no permanent cash floor, inverse-vol sizing up to 100%, ATR*2) as the working baseline, then test a volatility-regime entry block (skip if vol20 > 0.12 absolute rather than relative) plus a simple time-of-day filter (avoid entries in the first 60 minutes of the session). Evaluate on the same data window whether this reduces late-session or open-chop entries without harming the capital-preservation profile. Also continue logging any new hourly bars as they appear for forward paper testing.
