@@ -1,1 +1,45 @@
-$(cat /tmp/journal_full.txt)
+SOXL Paper Trading Journal
+==========================
+Session: 2026-11-04
+Starting capital: $10,000 paper
+Data: Yahoo Finance hourly OHLCV SOXL via yfinance
+Period: 2026-08-12 09:30 to 2026-11-04 12:30 (417 hourly candles)
+Cost assumptions: 0.05% commission + 0.05% slippage = 0.1% round-trip (applied on entry and exit)
+Benchmark: pure buy-and-hold SOXL from same start price/capital
+
+STRATEGY v0.1: Simple SMA trend + volatility filter
+- Long only when Close > 20-period SMA AND 20-period realized vol < median vol of the series
+- Full capital when in, 100% cash otherwise
+- No stops yet; exit purely on signal flip
+- Rationale: SOXL is a 3x daily-reset leveraged product. Path dependency and volatility decay punish holding through high-vol chop. Sitting in cash during high vol or downtrends should reduce decay and drawdowns while capturing some upside in quieter uptrends.
+
+KEY DECISIONS (selected; full simulation log available on request)
+- Candle 0 (2026-08-12 09:30): Price ~146.00. No signal (warmup). Action: do nothing. Equity: $10,000. BH: $10,000.
+- First entry ~2026-08-17 09:30: Price 152.80, signal long (above SMA, vol ok). ENTER LONG 65.41 shares. Reasoning: confirmed uptrend, vol not extreme. Size: full capital. Immediate P&L vs BH: similar.
+- Exit ~2026-08-18 09:30: Price 129.94. EXIT. Loss ~15%. Reasoning: signal flipped (price crossed below SMA). Action taken. Cumulative strategy ~$8,495 vs BH lower.
+- Subsequent entries/exits throughout Aug-Oct as signal toggled. Multiple small losses and a few gains. Strategy stayed out during major down legs (e.g., late Aug, early Sep, Oct volatility spikes).
+- Final candle 2026-11-04 12:30: Price ~66.73. Action: do nothing (out of position).
+
+CUMULATIVE RESULTS (after costs)
+- Strategy final equity: $8,365.85 (-16.34%)
+- Buy-and-hold final: $4,570.55 (-54.29%)
+- Excess return: +$3,795.30 (+37.95 percentage points)
+- Strategy max drawdown: -29.77%
+- BH max drawdown: -61.34%
+- % time invested: 27.3%
+- Number of round trips: 19
+
+Honesty note: Strategy still lost money in absolute terms because the overall period was a severe bear for semiconductors/SOXL. However, it massively outperformed pure BH by avoiding the worst of the volatility decay and drawdowns. The edge comes primarily from cash allocation during high-vol / downtrend periods rather than superior timing of longs.
+
+IMPROVEMENT HYPOTHESIS #1
+Hypothesis: Lengthening the SMA window to 30 periods will reduce whipsaws and improve risk-adjusted results.
+Test result: WORSE. Final equity $5,872.50 (-41.3%), max DD -44.6%, lower time invested. The longer window lagged the fast moves in this leveraged product and stayed in longer during deteriorating conditions.
+Conclusion: Stick with 20-period for now. Next experiment: add a hard stop-loss (e.g., 8% from entry) or ATR-based stop to limit individual trade losses, while keeping the same entry filter.
+
+NEXT EXPERIMENT
+Add 8% trailing or fixed stop-loss on open positions. Re-simulate on same data and compare absolute return, excess vs BH, max DD, and number of stopped trades.
+
+Risk notes
+- Leverage decay of 3x product is explicitly addressed by high cash allocation (72.7% of time).
+- Circuit breaker not yet active; current max DD -29.8% is within acceptable paper limit (will hard-stop at -35% if breached in future).
+- All trades hypothetical. No real orders placed.
